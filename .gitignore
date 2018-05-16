@@ -4,3 +4,15 @@
 
 /.vs
 /OnlineMarket/.vs/OnlineMarket/v15
+/OnlineMarket/.vs
+/OnlineMarket/OnlineMarket.BusinessLogic/bin/Debug/netstandard2.0
+/OnlineMarket/OnlineMarket.BusinessLogic/obj
+/OnlineMarket/OnlineMarket.Contract/bin/Debug/netstandard2.0
+/OnlineMarket/OnlineMarket.Contract/obj/Debug/netstandard2.0
+/OnlineMarket/OnlineMarket.Contract/obj
+/OnlineMarket/OnlineMarket.DataAccess/bin/Debug/netstandard2.0
+/OnlineMarket/OnlineMarket.DataAccess/obj
+/OnlineMarket/OnlineMarket.DependencyResolver/bin/Debug/netstandard2.0
+/OnlineMarket/OnlineMarket.DependencyResolver/obj
+/OnlineMarket/OnlineMarket.Mapper/bin/Debug/netstandard2.0
+/OnlineMarket/OnlineMarket.Mapper/obj
