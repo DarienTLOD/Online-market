@@ -1,8 +1,8 @@
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Autofac.Extensions.DependencyInjection;
 
-namespace OnlineMarket
+namespace OnlineMarket.Web
 {
     public class Program
     {

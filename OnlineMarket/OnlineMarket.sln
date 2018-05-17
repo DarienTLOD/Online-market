@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineMarket", "OnlineMarket\OnlineMarket.csproj", "{152FD8C1-F933-4B69-8171-A20E3C44D5CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineMarket.Web", "OnlineMarket\OnlineMarket.Web.csproj", "{152FD8C1-F933-4B69-8171-A20E3C44D5CB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineMarket.DataAccess", "OnlineMarket.DataAccess\OnlineMarket.DataAccess.csproj", "{BE395377-9D34-4735-8039-34B9D5F293A7}"
 EndProject
@@ -21,9 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineMarket.Contract", "On
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DependencyResolverAndMapper", "DependencyResolverAndMapper", "{2A60A714-5136-4799-9947-82521065B0D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineMarket.DependencyResolver", "OnlineMarket.DependencyResolver\OnlineMarket.DependencyResolver.csproj", "{3A5539FC-A09C-4537-B450-171C8CA87751}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineMarket.DependencyResolver", "OnlineMarket.DependencyResolver\OnlineMarket.DependencyResolver.csproj", "{3A5539FC-A09C-4537-B450-171C8CA87751}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineMarket.Mapper", "OnlineMarket.Mapper\OnlineMarket.Mapper.csproj", "{6C45744B-EE05-48C6-8A41-8970848B770D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnlineMarket.Mapper", "OnlineMarket.Mapper\OnlineMarket.Mapper.csproj", "{6C45744B-EE05-48C6-8A41-8970848B770D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

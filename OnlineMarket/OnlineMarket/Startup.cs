@@ -1,18 +1,15 @@
-using System;
-using System.Reflection;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using OnlineMarket.DataAccess;
 using OnlineMarket.DependencyResolver.Modules;
 
-namespace OnlineMarket
+namespace OnlineMarket.Web
 {
     public class Startup
     {
