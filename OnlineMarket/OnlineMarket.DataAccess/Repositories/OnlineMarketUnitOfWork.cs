@@ -3,15 +3,15 @@ using OnlineMarket.Contract.Interfaces;
 
 namespace OnlineMarket.DataAccess.Repositories
 {
-    public class OnlineMarketUnitOfWork : IOnlineMarketUnitOfWork
+    public class OnlineMarketUnitOfWork<T> : IOnlineMarketUnitOfWork<T> where T : class 
     {
-        public IRepositoryBase<UserContractModel> UserRepository { get; }
+        public IRepository<T> Repository { get; }
 
         private readonly IContext _context;
 
-        public OnlineMarketUnitOfWork(IRepositoryBase<UserContractModel> userRepository, IContext context)
+        public OnlineMarketUnitOfWork(IRepository<T> repository, IContext context)
         {
-            UserRepository = userRepository;
+            Repository = repository;
             _context = context;
         }
 

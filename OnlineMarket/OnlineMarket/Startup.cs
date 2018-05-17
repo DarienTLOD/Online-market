@@ -26,9 +26,6 @@ namespace OnlineMarket.Web
             services.AddMvc();
             services.AddDbContext<OnlineMarketContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineMarketDatabase")));
             services.AddAutoMapper();
-            //var builder = new ContainerBuilder();
-            //builder.Populate(services);
-            //return new AutofacServiceProvider(builder.Build());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

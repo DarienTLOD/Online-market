@@ -1,10 +1,9 @@
-﻿using OnlineMarket.Contract.ContractModels;
-
-namespace OnlineMarket.Contract.Interfaces
+﻿namespace OnlineMarket.Contract.Interfaces
 {
-    public interface IOnlineMarketUnitOfWork
+    public interface IOnlineMarketUnitOfWork<TI> 
+        where TI : class
     {
-        IRepositoryBase<UserContractModel> UserRepository { get; }
+        IRepository<TI> Repository { get; } 
         void Save();
     }
 }

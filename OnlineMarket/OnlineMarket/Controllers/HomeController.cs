@@ -1,8 +1,9 @@
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using OnlineMarket.Contract.Interfaces;
 
-namespace OnlineMarket.Web.Controllers
+namespace OnlineMarket.Controllers
 {
     public class HomeController : Controller
     {
