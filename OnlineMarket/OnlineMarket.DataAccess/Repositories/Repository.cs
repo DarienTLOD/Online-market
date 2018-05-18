@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using OnlineMarket.Contract.Interfaces;
-using AutoMapper;
 
 namespace OnlineMarket.DataAccess.Repositories
 {
@@ -20,7 +19,7 @@ namespace OnlineMarket.DataAccess.Repositories
 
         public IEnumerable<T> GetAll()
         {
-            return _context.Set<T>().ToList();
+            return _context.Set<T>().AsNoTracking().ToList();
         }
 
         public T Get(params object[] id)

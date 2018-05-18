@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace OnlineMarket.DataAccess.Entities
 {
     [Table("Users")]
-    public class UserDataModel
+    public class UserDataModel : AccountOwnerDataModel
     {
-        public Guid Id { get; set; }
         public string Email { get; set; }
     }
 }

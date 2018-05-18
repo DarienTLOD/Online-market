@@ -1,5 +1,4 @@
-﻿using OnlineMarket.Contract.ContractModels;
-using OnlineMarket.Contract.Interfaces;
+﻿using OnlineMarket.Contract.Interfaces;
 
 namespace OnlineMarket.DataAccess.Repositories
 {

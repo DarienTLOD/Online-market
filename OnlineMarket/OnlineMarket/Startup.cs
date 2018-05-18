@@ -24,7 +24,7 @@ namespace OnlineMarket.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddDbContext<OnlineMarketContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineMarketDatabase")));
+            services.AddDbContext<OnlineMarketContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineMarketDatabase"), b => b.MigrationsAssembly("OnlineMarket.Web")));
             services.AddAutoMapper();
         }
 
