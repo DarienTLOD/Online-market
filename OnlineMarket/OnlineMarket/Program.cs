@@ -17,6 +17,7 @@ namespace OnlineMarket.Web
                 var context = services.GetRequiredService<OnlineMarketContext>();
                 DbInitializer.Initialize(context);
             }
+            host.Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>

@@ -1,8 +1,10 @@
-﻿using OnlineMarket.Contract.Interfaces;
+﻿using System.Runtime.CompilerServices;
+using OnlineMarket.Contract.Interfaces;
 
-namespace OnlineMarket.DataAccess.Repositories
+[assembly: InternalsVisibleTo("OnlineMarket.DependencyResolver")]
+namespace OnlineMarket.DataAccess.UnitsOfWork
 {
-    public class OnlineMarketUnitOfWork<T> : IOnlineMarketUnitOfWork<T> where T : class 
+    internal class OnlineMarketUnitOfWork<T> : IOnlineMarketUnitOfWork<T> where T : class
     {
         public IRepository<T> Repository { get; }
 

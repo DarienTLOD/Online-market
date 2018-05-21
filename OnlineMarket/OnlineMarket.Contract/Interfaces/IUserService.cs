@@ -7,7 +7,8 @@ namespace OnlineMarket.Contract.Interfaces
 {
     public interface IUserService
     {
-        UserContractModel Get(Guid id);
+        UserContractModel Get(params object[] keyValues);
+        List<UserContractModel> GetAll();
         IEnumerable<UserContractModel> Find(Expression<Func<UserContractModel, bool>> predecate);
     }
 }

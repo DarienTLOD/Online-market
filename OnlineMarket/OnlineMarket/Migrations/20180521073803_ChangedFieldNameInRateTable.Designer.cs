@@ -12,9 +12,10 @@ using System;
 namespace OnlineMarket.Web.Migrations
 {
     [DbContext(typeof(OnlineMarketContext))]
-    partial class OnlineMarketContextModelSnapshot : ModelSnapshot
+    [Migration("20180521073803_ChangedFieldNameInRateTable")]
+    partial class ChangedFieldNameInRateTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

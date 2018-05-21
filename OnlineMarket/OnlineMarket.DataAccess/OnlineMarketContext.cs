@@ -18,7 +18,6 @@ namespace OnlineMarket.DataAccess
 
         public OnlineMarketContext(DbContextOptions options) : base(options)
         {
-            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 

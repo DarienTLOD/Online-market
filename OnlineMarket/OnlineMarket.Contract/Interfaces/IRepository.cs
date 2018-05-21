@@ -10,7 +10,10 @@ namespace OnlineMarket.Contract.Interfaces
         T Get(params object[] keyValues);
         IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
         void Create(T item);
+        void CreateMany(IEnumerable<T> items);
         void Update(T item);
         void Delete(T item);
+        IEnumerable<T> GetWithInclude(params Expression<Func<T, object>>[] includeProperties);
+        IEnumerable<T> GetWithInclude(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
     }
 }

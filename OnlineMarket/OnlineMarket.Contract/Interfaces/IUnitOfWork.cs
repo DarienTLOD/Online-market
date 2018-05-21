@@ -1,6 +1,6 @@
 ﻿namespace OnlineMarket.Contract.Interfaces
 {
-    public interface IContext
+    public interface IUnitOfWork
     {
         void Save();
     }

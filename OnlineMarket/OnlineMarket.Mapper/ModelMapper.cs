@@ -9,6 +9,12 @@ namespace OnlineMarket.Mapper
         public MappingProfile()
         {
             AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<UserContractModel, UserDataModel>(); });
+            AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<CurrentRateContractModel, CurrentRateDataModel>(); });
+            AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<ExchangeRatesDataModel, ExchangeRatesDataModel>(); });
+            AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<StorageContactModel, StorageDataModel>(); });
+            AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<OperationArchiveContractModel, OperationArchiveDataModel>(); });
+            AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<AccountContractModel, AccountDataModel>(); });
+            AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<ItemTypeContractModel, ItemTypeContractModel>(); });
         }
     }
 }

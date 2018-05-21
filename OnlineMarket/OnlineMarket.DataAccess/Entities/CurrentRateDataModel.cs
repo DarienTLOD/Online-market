@@ -10,6 +10,6 @@ namespace OnlineMarket.DataAccess.Entities
         public Guid ItemTypeId { get; set; }
         public ItemTypeDataModel ItemType { get; set; }
         [Column(TypeName = "money")]
-        public decimal BuyRate { get; set; }
+        public decimal Rate { get; set; }
     }
 }
