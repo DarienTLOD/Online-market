@@ -8,11 +8,12 @@ namespace OnlineMarket.DependencyResolver.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<UserService>().As<IUserService>();
+            builder.RegisterGeneric(typeof(AccountOwnerService<>)).As(typeof(IAccountOwnerService<>));
             builder.RegisterType<OperationService>().As<IOperationService>();
             builder.RegisterType<RatesService>().As<IRatesService>();
             builder.RegisterType<ItemsService>().As<IItemsService>();
             builder.RegisterType<AccountService>().As<IAccountService>();
+            builder.RegisterType<EmailSender>().As<IEmailSender>();
         }
     }
 }

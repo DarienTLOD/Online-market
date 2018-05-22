@@ -26,6 +26,7 @@ namespace OnlineMarket.DependencyResolver.Modules
             builder.RegisterType(typeof(RepositoryAdapter<ExchangeRatesContractModel, ExchangeRatesDataModel>)).As(typeof(IRepository<ExchangeRatesContractModel>));
             builder.RegisterType(typeof(RepositoryAdapter<StorageContactModel, StorageDataModel>)).As(typeof(IRepository<StorageContactModel>));
             builder.RegisterType(typeof(RepositoryAdapter<ItemTypeContractModel, ItemTypeDataModel>)).As(typeof(IRepository<ItemTypeContractModel>));
+            builder.RegisterType(typeof(RepositoryAdapter<StoreContractModel, StoreDataModel>)).As(typeof(IRepository<StoreContractModel>));
             builder.RegisterType<Context>().As<IContext>();
         }
     }

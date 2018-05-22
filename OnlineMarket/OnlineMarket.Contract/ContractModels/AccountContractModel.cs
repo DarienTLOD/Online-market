@@ -8,6 +8,7 @@ namespace OnlineMarket.Contract.ContractModels
     {
         public Guid Id { get; set; }
         public Guid AccountOwnerId { get; set; }
+        public List<StorageContactModel> Storages { get; set; }
         public decimal AvailableBalance { get; set; }
     }
 }

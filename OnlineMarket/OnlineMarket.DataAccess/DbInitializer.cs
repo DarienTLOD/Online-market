@@ -16,16 +16,21 @@ namespace OnlineMarket.DataAccess
             }
 
             var user = new UserDataModel { Email = "test@test.com" };
+            var store = new StoreDataModel { Name = "testStore" };
 
             context.Users.Add(user);
+            context.Store.Add(store);
 
             context.SaveChanges();
 
-            var account = new AccountDataModel { AccountOwner = user, AccountOwnerId = user.Id, AvailableBalance = 10000 };
+            var accounts = new List<AccountDataModel>()
+            {
+                new AccountDataModel { AccountOwner = user, AccountOwnerId = user.Id, AvailableBalance = 10000 },
+                new AccountDataModel { AccountOwner = store, AccountOwnerId = store.Id, AvailableBalance = 1000000 }
+            };
 
-            context.Accounts.Add(account);
+            context.Accounts.AddRange(accounts);
             context.SaveChanges();
-
 
             var itemTypes = new List<ItemTypeDataModel>
                 {
@@ -43,7 +48,8 @@ namespace OnlineMarket.DataAccess
             itemTypes.ForEach(x =>
             {
                 exchangeRates.Add(new ExchangeRatesDataModel { Rate = 15, ItemType = x, ItemTypeId = x.Id });
-                storage.Add(new StorageDataModel { ItemTypeId = x.Id, ItemType = x, Account = account, AccountId = account.Id, Quantity = 0, StorageAmount = 0 });
+                storage.Add(new StorageDataModel { ItemTypeId = x.Id, ItemType = x, Account = accounts.First(), AccountId = accounts.First().Id, Quantity = 0, StorageAmount = 0 });
+                storage.Add(new StorageDataModel { ItemTypeId = x.Id, ItemType = x, Account = accounts.Last(), AccountId = accounts.Last().Id, Quantity = 1000, StorageAmount = 15 * 1000 });
             });
 
             context.Storages.AddRange(storage);

@@ -14,7 +14,8 @@ namespace OnlineMarket.Mapper
             AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<StorageContactModel, StorageDataModel>(); });
             AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<OperationArchiveContractModel, OperationArchiveDataModel>(); });
             AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<AccountContractModel, AccountDataModel>(); });
-            AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<ItemTypeContractModel, ItemTypeContractModel>(); });
+            AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<ItemTypeContractModel, ItemTypeDataModel>(); });
+            AutoMapper.Mapper.Initialize(cfg => { cfg.CreateMap<StoreContractModel, StoreDataModel>(); });
         }
     }
 }

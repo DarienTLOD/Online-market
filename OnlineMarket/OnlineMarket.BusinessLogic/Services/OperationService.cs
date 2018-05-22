@@ -18,24 +18,47 @@ namespace OnlineMarket.BusinessLogic.Services
             _operationUnitOfWork = operationUnitOfWork;
         }
 
-        public void BuyItems(OperationContractModel operation)
+        private OperationContent InitializeOperationContent(OperationContractModel operation)
         {
             var operationContent = new OperationContent
             {
                 Rates = GetCurrentRates(operation.Items),
-                UserAccount = GetAccountInfoByAccoundId(operation.UserAccountId),
-                UserStorages = GetStoragesByAccountNumber(operation.UserAccountId),
-                StoreAccount = GetAccountInfoByAccoundId(operation.StoreAccountId),
-                StoreStorages = GetStoragesByAccountNumber(operation.StoreAccountId)
+                ToAccount = GetAccountInfoByAccoundId(operation.AccountOwnerToAccountId),
+                ToStorages = GetStoragesByAccountNumber(operation.AccountOwnerToAccountId),
+                FromAccount = GetAccountInfoByAccoundId(operation.AccountOwnerFromAccountId),
+                FromStorages = GetStoragesByAccountNumber(operation.AccountOwnerFromAccountId),
             };
 
+            return operationContent;
+        }
+
+        private OperationContent PrepareOperation(OperationContractModel operation)
+        {
+            var operationContent = InitializeOperationContent(operation);
+
             CalculateAmount(operationContent.Rates, operation.Items);
-
             operationContent.OperationAmount = operation.Items.Sum(x => x.ItemAmount);
+            return operationContent;
+        }
 
-            if (operationContent.UserAccount.AvailableBalance < operationContent.OperationAmount) throw new Exception("You don't have enough money for operation");
+        public void SellItems(OperationContractModel operation)
+        {
+            var operationContent = PrepareOperation(operation);
 
-            MakeTransaction(operation, operationContent);
+            if (operationContent.ToAccount.AvailableBalance < operationContent.OperationAmount) throw new Exception("You don't have enough money for operation");
+
+            new Transaction().MakeSellTransaction(operationContent, operation);
+            SaveOperation(operationContent, operation);
+        }
+
+        public void BuyItems(OperationContractModel operation)
+        {
+            var operationContent = PrepareOperation(operation);
+
+            if (operationContent.ToAccount.AvailableBalance < operationContent.OperationAmount) throw new Exception("You don't have enough money for operation");
+
+            new Transaction().MakeBuyTransaction(operationContent, operation);
+            SaveOperation(operationContent, operation);
         }
 
         private List<CurrentRateContractModel> GetCurrentRates(IReadOnlyCollection<OperationItemContactModel> operationItems)
@@ -62,21 +85,25 @@ namespace OnlineMarket.BusinessLogic.Services
             });
         }
 
-        private void MakeTransaction(OperationContractModel operation, OperationContent operationContent)
+        private void SaveOperation(OperationContent operationContent, OperationContractModel operation)
         {
-            TakeAmountIntoAccount(operationContent);
-            operationContent.UserStorages.Join(operation.Items, x => x.ItemTypeId, y=>y.ItemTypeId,
-                (storage, item) =>
-                {
-                    storage.Quantity -= item.Quantity;
-                    return storage;
-                });
+            _operationUnitOfWork.AccountRepository.Update(operationContent.ToAccount);
+            _operationUnitOfWork.AccountRepository.Update(operationContent.FromAccount);
+            operationContent.ToStorages.ForEach(x => { _operationUnitOfWork.StorageRepository.Update(x); }); 
+            operationContent.FromStorages.ForEach(x => { _operationUnitOfWork.StorageRepository.Update(x); }); 
+            SaveInOperationArchive(operationContent.FromAccount, operationContent.ToAccount, operation);
         }
 
-        private void TakeAmountIntoAccount(OperationContent operationContent)
+        private void SaveInOperationArchive(AccountContractModel accountFrom, AccountContractModel accountTo, OperationContractModel operation)
         {
-            operationContent.StoreAccount.AvailableBalance += operationContent.OperationAmount;
-            operationContent.UserAccount.AvailableBalance -= operationContent.OperationAmount;
+           _operationUnitOfWork.OperationArchiveRepository.CreateMany(operation.Items.Select(x => new OperationArchiveContractModel
+            {
+                ItemTypeId = x.ItemTypeId,
+                AccountFromId = accountFrom.Id,
+                AccountToId = accountTo.Id,
+                OperationAmount = x.ItemAmount,
+                Quantity = x.Quantity
+            }));
         }
     }
 }

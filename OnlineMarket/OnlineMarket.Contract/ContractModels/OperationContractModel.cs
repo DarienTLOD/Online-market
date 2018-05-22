@@ -5,10 +5,10 @@ namespace OnlineMarket.Contract.ContractModels
 {
     public class OperationContractModel
     {
-        public Guid UserId { get; set; }
-        public Guid UserAccountId { get; set; }
-        public Guid StoreId { get; set; }
-        public Guid StoreAccountId { get; set; }
+        public Guid AccountOwnerToId { get; set; }
+        public Guid AccountOwnerToAccountId { get; set; }
+        public Guid AccountOwnerFromId { get; set; }
+        public Guid AccountOwnerFromAccountId { get; set; }
         public List<OperationItemContactModel> Items { get; set; }
     }
 }

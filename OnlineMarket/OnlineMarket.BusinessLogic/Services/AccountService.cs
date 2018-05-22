@@ -15,7 +15,7 @@ namespace OnlineMarket.BusinessLogic.Services
 
         public AccountContractModel GetAccountByAccountOwnerId(Guid accountOwnerId)
         {
-            return _accountUnitOfWork.AccountRepository.Find(x => x.AccountOwnerId == accountOwnerId).FirstOrDefault();
+            return _accountUnitOfWork.AccountRepository.GetWithInclude(x=>x.AccountOwnerId == accountOwnerId, y=>y.Storages).FirstOrDefault();
         }
     }
 }
