@@ -1,6 +1,7 @@
 ﻿using OnlineMarket.DataAccess.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using OnlineMarket.Contract.ContractModels;
 
 namespace OnlineMarket.DataAccess
 {
@@ -15,7 +16,7 @@ namespace OnlineMarket.DataAccess
                 return;
             }
 
-            var user = new UserDataModel { Email = "test@test.com" };
+            var user = new UserContractModel { Email = "test@test.com" };
             var store = new StoreDataModel { Name = "testStore" };
 
             context.Users.Add(user);
@@ -25,8 +26,8 @@ namespace OnlineMarket.DataAccess
 
             var accounts = new List<AccountDataModel>()
             {
-                new AccountDataModel { AccountOwner = user, AccountOwnerId = user.Id, AvailableBalance = 10000 },
-                new AccountDataModel { AccountOwner = store, AccountOwnerId = store.Id, AvailableBalance = 1000000 }
+                new AccountDataModel { AccountOwnerId = user.Id, AvailableBalance = 10000 },
+                new AccountDataModel { AccountOwnerId = store.Id, AvailableBalance = 1000000 }
             };
 
             context.Accounts.AddRange(accounts);

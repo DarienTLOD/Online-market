@@ -7,46 +7,46 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using OnlineMarket.Web.Infrastructure;
 using OnlineMarket.Web.Models;
-using System.Security.Cryptography;
 using JWT;
 using JWT.Algorithms;
 using JWT.Serializers;
+using OnlineMarket.Contract.ContractModels;
 
 namespace OnlineMarket.Web.Controllers
 {
     [Route("api/[controller]")]
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<UserContractModel> _userManager;
+        private readonly SignInManager<UserContractModel> _signInManager;
         private readonly JwtSettings _options;
 
         public AccountController(
-          UserManager<IdentityUser> userManager,
-          SignInManager<IdentityUser> signInManager,
-          IOptions<JwtSettings> optionsAccessor)
+          UserManager<UserContractModel> userManager,
+          SignInManager<UserContractModel> signInManager,
+          IOptions<JwtSettings> optionsAccessor, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _options = optionsAccessor.Value;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] UserCredentials credentials)
+        public async Task<IActionResult> Register(/*[FromBody] UserCredentials credentials*/)
         {
+            var credentials = new UserCredentials {Email = "123",Password = "12312a3A!"};
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = credentials.Email, Email = credentials.Email };
+                var user = new UserContractModel { UserName = credentials.Email, Email = credentials.Email };
                 var result = await _userManager.CreateAsync(user, credentials.Password);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return new JsonResult(new Dictionary<string, object>
-                    {
-                        { "access_token", GetAccessToken(credentials.Email) },
-                        { "id_token", GetIdToken(user) }
-
-                    });
+                        await _userManager.AddToRoleAsync(user, "clients");
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                    return new JsonResult(new { accessToken = new JwtTokenBuilder(_options).Build(credentials.Email, "" ) }
+                    );
                 }
                 return Errors(result);
             }

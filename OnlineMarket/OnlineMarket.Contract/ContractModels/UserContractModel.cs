@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace OnlineMarket.Contract.ContractModels
+namespace OnlineMarket.Contract.ContractModels 
 {
-    public class UserContractModel
+    public class UserContractModel : IdentityUser, IAccountOwnerBase
     {
-        public Guid Id { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
     }
 }

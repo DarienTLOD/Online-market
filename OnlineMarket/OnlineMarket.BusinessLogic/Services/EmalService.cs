@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using OnlineMarket.Contract.ContractModels;
 using OnlineMarket.Contract.Interfaces;
-using OnlineMarket.Web.Infrastructure;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 

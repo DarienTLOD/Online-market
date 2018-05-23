@@ -4,15 +4,15 @@ using OnlineMarket.Contract.Interfaces;
 [assembly: InternalsVisibleTo("OnlineMarket.DependencyResolver")]
 namespace OnlineMarket.DataAccess.UnitsOfWork
 {
-    internal class OnlineMarketUnitOfWork<T> : IOnlineMarketUnitOfWork<T> where T : class
+    internal class UserUnitOfWork<T> : IUserUnitOfWork<T> where T : class
     {
-        public IRepository<T> Repository { get; }
+        public IRepository<T> UserRepository { get; }
 
         private readonly IContext _context;
 
-        public OnlineMarketUnitOfWork(IRepository<T> repository, IContext context)
+        public UserUnitOfWork(IRepository<T> userRepository, IContext context)
         {
-            Repository = repository;
+            UserRepository = userRepository;
             _context = context;
         }
 

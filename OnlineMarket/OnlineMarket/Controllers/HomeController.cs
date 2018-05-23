@@ -12,18 +12,14 @@ namespace OnlineMarket.Web.Controllers
         private readonly IOperationService _operationService;
         private readonly IRatesService _ratesService;
         private readonly IItemsService _itemsService;
-        private readonly IAccountOwnerService<UserContractModel> _userService;
-        private readonly IAccountOwnerService<StoreContractModel> _storeContractModel;
         private readonly IAccountService _accountService;
 
-        public HomeController(IOperationService operationService, IRatesService ratesService, IItemsService itemsService, IAccountService accountService, IAccountOwnerService<UserContractModel> userService, IAccountOwnerService<StoreContractModel> storeContractModel)
+        public HomeController(IOperationService operationService, IRatesService ratesService, IItemsService itemsService, IAccountService accountService)
         {
             _operationService = operationService;
             _ratesService = ratesService;
             _itemsService = itemsService;
             _accountService = accountService;
-            _userService = userService;
-            _storeContractModel = storeContractModel;
         }
 
         public IActionResult Index()

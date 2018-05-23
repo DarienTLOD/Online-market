@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 
-namespace OnlineMarket.Web.Helpers
+namespace OnlineMarket.Web.Infrastructure
 {
     public class JwtToken
     {

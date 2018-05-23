@@ -11,9 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using OnlineMarket.BusinessLogic.Services;
-using OnlineMarket.Contract.Interfaces;
+using OnlineMarket.Contract.ContractModels;
 using OnlineMarket.DataAccess;
+using OnlineMarket.DataAccess.Entities;
 using OnlineMarket.DependencyResolver.Modules;
 using OnlineMarket.Web.Infrastructure;
 
@@ -31,8 +31,16 @@ namespace OnlineMarket.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var settings = new JwtSettings();
+
             services.AddMvc();
-            services.AddDbContext<OnlineMarketContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineMarketDatabase"), b => b.MigrationsAssembly("OnlineMarket.Web")));
+            services.AddDbContext<OnlineMarketContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineMarketDatabase")));
+            services.AddOptions();
+            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("SendGrid"));
+            Configuration.GetSection("JwtSettings").Bind(settings);
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
+            services.AddIdentity<UserContractModel, IdentityRole>()
+                .AddEntityFrameworkStores<OnlineMarketContext>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -42,9 +50,9 @@ namespace OnlineMarket.Web
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
 
-                        ValidIssuer = "Fiver.Security.Bearer",
-                        ValidAudience = "Fiver.Security.Bearer",
-                        IssuerSigningKey = JwtSecurityKey.Create("fiver-secret-key")
+                        ValidIssuer = settings.Issuer,
+                        ValidAudience = settings.Audience,
+                        IssuerSigningKey = JwtSecurityKey.Create(settings.SecretKey)
                     };
                     options.Events = new JwtBearerEvents
                     {
@@ -61,20 +69,17 @@ namespace OnlineMarket.Web
                     };
                 });
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("Member",
-                    policy => policy.RequireClaim("MembershipId"));
-            });
-            services.AddAutoMapper();
+           services.AddAutoMapper();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            var builder = new ConfigurationBuilder();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseAuthentication();
+                builder.AddUserSecrets<Startup>();
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
                 {
                     HotModuleReplacement = true,
@@ -86,6 +91,7 @@ namespace OnlineMarket.Web
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseAuthentication();
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
