@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace OnlineMarket.Web.Infrastructure
 {
-
     public class JwtSecurityKey
     {
         public static SymmetricSecurityKey Create(string secret)

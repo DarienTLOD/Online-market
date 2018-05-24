@@ -13,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using OnlineMarket.Contract.ContractModels;
 using OnlineMarket.DataAccess;
-using OnlineMarket.DataAccess.Entities;
 using OnlineMarket.DependencyResolver.Modules;
 using OnlineMarket.Web.Infrastructure;
 
@@ -37,12 +36,18 @@ namespace OnlineMarket.Web
             services.AddDbContext<OnlineMarketContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineMarketDatabase")));
             services.AddOptions();
             services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("SendGrid"));
+            services.Configure<UserSettingsOptions>(Configuration.GetSection("UserSettings"));
+            services.Configure<DefaultUserRolesOptions>(Configuration.GetSection("DefaultUserRoles"));
+            services.Configure<DefaultNewUserRoleOptions>(Configuration.GetSection("DefaultNewUserRole"));
+            services.Configure<EmailCredentials>(Configuration.GetSection("GmailAccount"));
+            services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
+
             Configuration.GetSection("JwtSettings").Bind(settings);
             services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
-            services.AddIdentity<UserContractModel, IdentityRole>()
-                .AddEntityFrameworkStores<OnlineMarketContext>();
+            services.AddIdentity<UserContractModel, IdentityRole>().AddEntityFrameworkStores<OnlineMarketContext>().AddDefaultTokenProviders();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => {
+                .AddJwtBearer(options =>
+                {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
@@ -69,10 +74,10 @@ namespace OnlineMarket.Web
                     };
                 });
 
-           services.AddAutoMapper();
+            services.AddAutoMapper();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
         {
             var builder = new ConfigurationBuilder();
 
@@ -113,3 +118,4 @@ namespace OnlineMarket.Web
         }
     }
 }
+

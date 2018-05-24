@@ -1,20 +1,19 @@
 ﻿using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using OnlineMarket.Contract.Interfaces;
 
 namespace OnlineMarket.Web.Extensions
 {
     public static class EmailSenderExtensions
     {
-        public static Task SendEmailConfirmationAsync(this IEmailSender emailSender, string email, string link)
+        public static void SendEmailConfirmationAsync(this IEmailSender emailSender, string email, string link)
         {
-            return emailSender.SendEmailAsync(email, "Confirm your email",
+             emailSender.SendEmailAsync(email, "Confirm your email",
                 $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(link)}'>clicking here</a>.");
         }
 
-        public static Task SendResetPasswordAsync(this IEmailSender emailSender, string email, string callbackUrl)
+        public static void SendResetPasswordAsync(this IEmailSender emailSender, string email, string callbackUrl)
         {
-            return emailSender.SendEmailAsync(email, "Reset Password",
+             emailSender.SendEmailAsync(email, "Reset Password",
                 $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
         }
     }

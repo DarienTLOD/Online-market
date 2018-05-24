@@ -1,13 +1,15 @@
 ﻿using OnlineMarket.DataAccess.Entities;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using OnlineMarket.Contract.ContractModels;
 
 namespace OnlineMarket.DataAccess
 {
-    public static class DbInitializer
+    public class DbInitializer
     {
-        public static void Initialize(OnlineMarketContext context)
+        public void Initialize(OnlineMarketContext context, RoleManager<IdentityRole> roleManager, UserManager<UserContractModel> userManager, IOptions<UserSettingsOptions> userSettings, IOptions<DefaultUserRolesOptions> roles)
         {
             context.Database.EnsureCreated();
 
@@ -16,10 +18,31 @@ namespace OnlineMarket.DataAccess
                 return;
             }
 
-            var user = new UserContractModel { Email = "test@test.com" };
+            //Trying staff until it works
+            foreach (var x in roles.Value.Roles)
+            {
+                var roleExist =  roleManager.RoleExistsAsync(x).Result;
+                if (roleExist) continue;
+
+
+                var unused = roleManager.CreateAsync(new IdentityRole(x)).Result;
+            }
+
+            var user = new UserContractModel
+            {
+
+                UserName = userSettings.Value.UserName,
+                Email = userSettings.Value.UserEmail
+            };
+
+            var createAdminUser = userManager.CreateAsync(user, userSettings.Value.UserPassword).Result;
+            if (createAdminUser.Succeeded)
+            {
+                var unused = userManager.AddToRoleAsync(user, userSettings.Value.UserRole).Result;
+            }
+
             var store = new StoreDataModel { Name = "testStore" };
 
-            context.Users.Add(user);
             context.Store.Add(store);
 
             context.SaveChanges();

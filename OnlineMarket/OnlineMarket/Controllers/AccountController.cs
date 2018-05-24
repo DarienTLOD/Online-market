@@ -1,115 +1,107 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using OnlineMarket.Web.Infrastructure;
 using OnlineMarket.Web.Models;
-using JWT;
-using JWT.Algorithms;
-using JWT.Serializers;
+using Microsoft.AspNetCore.Authorization;
 using OnlineMarket.Contract.ContractModels;
+using OnlineMarket.Contract.Interfaces;
+using OnlineMarket.Web.Extensions;
+using OnlineMarket.Web.Helpers;
 
 namespace OnlineMarket.Web.Controllers
 {
-    [Route("api/[controller]")]
+    [AllowAnonymous]
+    [Route("api/[controller]/[action]")]
     public class AccountController : Controller
     {
-        RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<UserContractModel> _userManager;
         private readonly SignInManager<UserContractModel> _signInManager;
-        private readonly JwtSettings _options;
+        private readonly JwtSettings _settings;
+        private readonly DefaultNewUserRoleOptions _defaultRole;
+        private readonly IEmailSender _emailSender;
 
         public AccountController(
           UserManager<UserContractModel> userManager,
           SignInManager<UserContractModel> signInManager,
-          IOptions<JwtSettings> optionsAccessor, RoleManager<IdentityRole> roleManager)
+          IOptions<JwtSettings> optionsAccessor,
+          IOptions<DefaultNewUserRoleOptions> defaultRole,
+          IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _roleManager = roleManager;
-            _options = optionsAccessor.Value;
+            _defaultRole = defaultRole.Value;
+            _settings = optionsAccessor.Value;
+            _emailSender = emailSender;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(/*[FromBody] UserCredentials credentials*/)
+        public async Task<IActionResult> Register([FromBody] UserCredentials credentials)
         {
-            var credentials = new UserCredentials {Email = "123",Password = "12312a3A!"};
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return ErrorHelper.Error(ModelState);
+
+            var user = new UserContractModel { UserName = credentials.Email, Email = credentials.Email };
+            var result = await _userManager.CreateAsync(user, credentials.Password);
+
+            if (!result.Succeeded) return ErrorHelper.Error(result);
+
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
+
+            _emailSender.SendEmailConfirmationAsync(credentials.Email, callbackUrl);
+            result = await _userManager.AddToRoleAsync(user, "Client");
+
+            if (!result.Succeeded) return ErrorHelper.Error(result);
+
+            return Ok("Account confirmation is required.");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] UserCredentials credentials)
+        {
+            if (!ModelState.IsValid) return ErrorHelper.Error(ModelState);
+
+            var user = await _userManager.FindByEmailAsync(credentials.Email);
+
+            if (user == null) return ErrorHelper.Error("The user with email doesn't exist.");
+            if (!await _userManager.IsEmailConfirmedAsync(user)) return ErrorHelper.Error("Account confirmation is required.");
+
+            var result = await _signInManager.PasswordSignInAsync(user, credentials.Password, credentials.IsPersistent, false);
+
+            if (!result.Succeeded) return ErrorHelper.Error("Error login user.");
+
+            return new JsonResult(new { accessToken = new JwtTokenBuilder(_settings).Build(credentials.Email, _defaultRole.Role), userName = credentials.Email });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
             {
-                var user = new UserContractModel { UserName = credentials.Email, Email = credentials.Email };
-                var result = await _userManager.CreateAsync(user, credentials.Password);
-                if (result.Succeeded)
-                {
-                        await _userManager.AddToRoleAsync(user, "clients");
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                    return new JsonResult(new { accessToken = new JwtTokenBuilder(_options).Build(credentials.Email, "" ) }
-                    );
-                }
-                return Errors(result);
+                return ErrorHelper.Error("Error confirming email.");
             }
-            return Error("Unexpected error");
-        }
 
-        private string GetIdToken(IdentityUser user)
-        {
-            var payload = new Dictionary<string, object>
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
             {
-                { "id", user.Id },
-                { "sub", user.Email },
-                { "email", user.Email },
-                { "emailConfirmed", user.EmailConfirmed }
-            };
-            return GetToken(payload);
-        }
+                return ErrorHelper.Error($"Unable to load user with ID '{userId}'.");
+            }
 
-        private string GetAccessToken(string Email)
-        {
-            var payload = new Dictionary<string, object>
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (!result.Succeeded)
             {
-                { "sub", Email },
-                { "email", Email }
-            };
-            return GetToken(payload);
-        }
+                return ErrorHelper.Error($"Error confirming email for user with ID '{userId}':");
+            }
 
-        private string GetToken(Dictionary<string, object> payload)
-        {
-            var secret = _options.SecretKey;
-
-            payload.Add("iss", _options.Issuer);
-            payload.Add("aud", _options.Audience);
-            payload.Add("nbf", ConvertToUnixTimestamp(DateTime.Now));
-            payload.Add("iat", ConvertToUnixTimestamp(DateTime.Now));
-            payload.Add("exp", ConvertToUnixTimestamp(DateTime.Now.AddDays(7)));
-            IJwtAlgorithm algorithm = new HMACSHA256Algorithm();
-            IJsonSerializer serializer = new JsonNetSerializer();
-            IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
-            IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
-
-            return encoder.Encode(payload, secret);
-        }
-
-        private JsonResult Errors(IdentityResult result)
-        {
-            var items = result.Errors
-                .Select(x => x.Description)
-                .ToArray();
-            return new JsonResult(items) { StatusCode = 400 };
-        }
-
-        private JsonResult Error(string message)
-        {
-            return new JsonResult(message) { StatusCode = 400 };
-        }
-
-        private static double ConvertToUnixTimestamp(DateTime date)
-        {
-            var origin = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            var diff = date.ToUniversalTime() - origin;
-            return Math.Floor(diff.TotalSeconds);
+            return Ok();
         }
     }
 }
