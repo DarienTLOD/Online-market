@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using AutoMapper;
 using OnlineMarket.Contract.Interfaces;
 
@@ -27,6 +28,12 @@ namespace OnlineMarket.DataAccess.RepositoryAdapter
             return _repository.GetAll().Select(x => _mapper.Map<TO, TI>(x));
         }
 
+        public async Task<IEnumerable<TI>> GetAllAsync()
+        {
+            var data = await _repository.GetAllAsync();
+            return data.Select(x => _mapper.Map<TO, TI>(x));
+        }
+
         public TI Get(params object[] keyValues)
         {
             return _mapper.Map<TO, TI>(_repository.Get(keyValues));
@@ -42,9 +49,19 @@ namespace OnlineMarket.DataAccess.RepositoryAdapter
             _repository.Create(_mapper.Map<TI, TO>(item));
         }
 
+        public void CreateAsync(TI item)
+        {
+            _repository.CreateAsync(_mapper.Map<TI, TO>(item));
+        }
+
         public void CreateMany(IEnumerable<TI> items)
         {
             _repository.CreateMany(items.Select(x => _mapper.Map<TI, TO>(x)).ToList());
+        }
+
+        public Task CreateManyAsync(IEnumerable<TI> items)
+        {
+            return _repository.CreateManyAsync(items.Select(x => _mapper.Map<TI, TO>(x)).ToList());
         }
 
         public void Update(TI item)

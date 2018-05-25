@@ -50,7 +50,7 @@ namespace OnlineMarket.Web.Controllers
             var callbackUrl = Url.EmailConfirmationLink(user.Id, code, Request.Scheme);
 
             _emailSender.SendEmailConfirmationAsync(credentials.Email, callbackUrl);
-            result = await _userManager.AddToRoleAsync(user, "Client");
+            result = await _userManager.AddToRoleAsync(user, _defaultRole.Role);
 
             if (!result.Succeeded) return ErrorHelper.Error(result);
 

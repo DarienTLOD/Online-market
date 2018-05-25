@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
 using OnlineMarket.Contract.Interfaces;
 
@@ -17,6 +18,11 @@ namespace OnlineMarket.DataAccess
         public void Save()
         {
             _onlineMarketContext.SaveChanges();
+        }
+
+        public Task<int> SaveAsync()
+        {
+           return _onlineMarketContext.SaveChangesAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using OnlineMarket.Contract.Interfaces;
 
 [assembly: InternalsVisibleTo("OnlineMarket.DependencyResolver")]
@@ -28,6 +29,11 @@ namespace OnlineMarket.DataAccess.UnitsOfWork
         public void Save()
         {
             _context.Save();
+        }
+
+        public Task<int> SaveAsync()
+        {
+            return _context.SaveAsync();
         }
     }
 }

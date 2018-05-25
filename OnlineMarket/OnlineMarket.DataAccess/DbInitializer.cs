@@ -30,9 +30,9 @@ namespace OnlineMarket.DataAccess
 
             var user = new UserContractModel
             {
-
                 UserName = userSettings.Value.UserName,
-                Email = userSettings.Value.UserEmail
+                Email = userSettings.Value.UserEmail,
+                EmailConfirmed = true
             };
 
             var createAdminUser = userManager.CreateAsync(user, userSettings.Value.UserPassword).Result;

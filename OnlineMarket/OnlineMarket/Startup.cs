@@ -44,7 +44,21 @@ namespace OnlineMarket.Web
 
             Configuration.GetSection("JwtSettings").Bind(settings);
             services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
-            services.AddIdentity<UserContractModel, IdentityRole>().AddEntityFrameworkStores<OnlineMarketContext>().AddDefaultTokenProviders();
+            services.AddIdentity<UserContractModel, IdentityRole>(options =>
+            {
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 2;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+                options.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<OnlineMarketContext>().AddDefaultTokenProviders();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {

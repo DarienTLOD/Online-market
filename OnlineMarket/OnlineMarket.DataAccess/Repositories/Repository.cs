@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using OnlineMarket.Contract.Interfaces;
 
@@ -24,6 +25,11 @@ namespace OnlineMarket.DataAccess.Repositories
             return _context.Set<T>().AsNoTracking().ToList();
         }
 
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _context.Set<T>().AsNoTracking().ToListAsync();
+        }
+
         public T Get(params object[] id)
         {
             return _context.Set<T>().Find(id);
@@ -34,9 +40,19 @@ namespace OnlineMarket.DataAccess.Repositories
             _context.Set<T>().Add(item);
         }
 
+        public void CreateAsync(T item)
+        {
+            _context.Set<T>().AddAsync(item);
+        }
+
         public void CreateMany(IEnumerable<T> items)
         {
             _context.Set<T>().AddRange(items);
+        }
+
+        public Task CreateManyAsync(IEnumerable<T> items)
+        {
+           return _context.Set<T>().AddRangeAsync(items);
         }
 
         public void Update(T item)

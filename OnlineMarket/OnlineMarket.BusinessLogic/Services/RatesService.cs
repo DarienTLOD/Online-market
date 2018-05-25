@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using OnlineMarket.Contract.ContractModels;
 using OnlineMarket.Contract.Interfaces;
 
@@ -14,23 +15,28 @@ namespace OnlineMarket.BusinessLogic.Services
             _ratesUnitOfWork = ratesUnitOfWork;
         }
 
-        public List<CurrentRateContractModel> GetCurrentRates()
+        public async Task<List<CurrentRateContractModel>> GetCurrentRatesAsync()
         {
-            return _ratesUnitOfWork.CurrentRateRepository.GetAll().ToList();
+            var data = await _ratesUnitOfWork.CurrentRateRepository.GetAllAsync();
+            return data.ToList();
         }
 
-        public void ChangeRates(List<CurrentRateContractModel> rates)
+        public async Task<int> ChangeRatesAsync(List<CurrentRateContractModel> rates)
         {
             rates.ForEach(x => { _ratesUnitOfWork.CurrentRateRepository.Update(x); });
 
-            _ratesUnitOfWork.ExchangeRatesRepository.CreateMany(rates.Select(x => new ExchangeRatesContractModel
+            await _ratesUnitOfWork.ExchangeRatesRepository.CreateManyAsync(rates.Select(x => new ExchangeRatesContractModel
             {
-                ItemType = x.ItemType,
                 Rate = x.Rate,
                 ItemTypeId = x.ItemTypeId
             }));
 
-            _ratesUnitOfWork.Save();
+            return await _ratesUnitOfWork.SaveAsync();
+        }
+
+        public List<CurrentRateContractModel> GetCurrentRates()
+        {
+            return _ratesUnitOfWork.CurrentRateRepository.GetAll().ToList();
         }
     }
 }
