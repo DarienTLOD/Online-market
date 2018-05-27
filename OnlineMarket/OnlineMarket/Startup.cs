@@ -15,6 +15,7 @@ using OnlineMarket.Contract.ContractModels;
 using OnlineMarket.DataAccess;
 using OnlineMarket.DependencyResolver.Modules;
 using OnlineMarket.Web.Infrastructure;
+using OnlineMarket.Web.WebSocket;
 
 namespace OnlineMarket.Web
 {
@@ -41,6 +42,7 @@ namespace OnlineMarket.Web
             services.Configure<DefaultNewUserRoleOptions>(Configuration.GetSection("DefaultNewUserRole"));
             services.Configure<EmailCredentials>(Configuration.GetSection("GmailAccount"));
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
+            services.AddWebSocketManager();
 
             Configuration.GetSection("JwtSettings").Bind(settings);
             services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
@@ -110,6 +112,8 @@ namespace OnlineMarket.Web
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseWebSockets(new WebSocketOptions());
+            app.MapWebSocketManager("/rates", serviceProvider.GetService<RatesWebSocketHandler>());
             app.UseAuthentication();
             app.UseStaticFiles();
 
