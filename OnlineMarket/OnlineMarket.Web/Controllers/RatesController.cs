@@ -15,9 +15,9 @@ namespace OnlineMarket.Web.Controllers
     public class RatesController : Controller
     {
         private readonly IRatesService _ratesService;
-        private readonly RatesWebSocketHandler _handler;
+        private readonly OnlineMarketWebSocketHandler _handler;
 
-        public RatesController(IRatesService ratesService, RatesWebSocketHandler handler)
+        public RatesController(IRatesService ratesService, OnlineMarketWebSocketHandler handler)
         {
             _ratesService = ratesService;
             _handler = handler;
@@ -36,7 +36,7 @@ namespace OnlineMarket.Web.Controllers
             try
             {
                 var result = await _ratesService.ChangeRatesAsync(rates);
-                await _handler.SendMessageToAllAsync(JsonConvert.SerializeObject(rates));
+                await _handler.SendMessageToAllAsync(JsonConvert.SerializeObject(new {type = "rates", rates}));
                 if (result == 0) return ErrorHelper.Error("Nothing changed");
 
                 return Ok();

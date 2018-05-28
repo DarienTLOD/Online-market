@@ -38,7 +38,7 @@ namespace OnlineMarket.Web.Infrastructure
             return this;
         }
 
-        public JwtToken Build(string userName, string userRole)
+        public JwtToken Build(string userName, string userRole, string userId)
         {
             EnsureArguments();
 
@@ -46,6 +46,7 @@ namespace OnlineMarket.Web.Infrastructure
             {
               new Claim(ClaimsIdentity.DefaultNameClaimType, userName),
               new Claim(ClaimsIdentity.DefaultRoleClaimType, userRole),
+              new Claim("userId", userId),
               new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             }
             .Union(_claims.Select(item => new Claim(item.Key, item.Value)));

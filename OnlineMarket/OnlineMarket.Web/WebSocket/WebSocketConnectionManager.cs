@@ -26,13 +26,9 @@ namespace OnlineMarket.Web.WebSocket
             return _sockets.FirstOrDefault(p => p.Value == socket).Key;
         }
 
-        public void AddSocket(System.Net.WebSockets.WebSocket socket)
+        public void AddSocket(System.Net.WebSockets.WebSocket socket,string userId)
         {
-            var sId = CreateConnectionId();
-            while (!_sockets.TryAdd(sId, socket))
-            {
-                sId = CreateConnectionId();
-            }
+            _sockets.TryAdd(userId, socket);
         }
 
         public async Task RemoveSocket(string id)
@@ -46,11 +42,6 @@ namespace OnlineMarket.Web.WebSocket
             {
 
             }
-        }
-
-        private string CreateConnectionId()
-        {
-            return Guid.NewGuid().ToString();
         }
     }
 }

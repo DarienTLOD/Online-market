@@ -15,9 +15,9 @@ namespace OnlineMarket.Web.WebSocket
             WebSocketConnectionManager = webSocketConnectionManager;
         }
 
-        public virtual void OnConnected(System.Net.WebSockets.WebSocket socket)
+        public virtual void OnConnected(System.Net.WebSockets.WebSocket socket, string userId)
         {
-            WebSocketConnectionManager.AddSocket(socket);
+            WebSocketConnectionManager.AddSocket(socket, userId);
         }
 
         public virtual async Task OnDisconnected(System.Net.WebSockets.WebSocket socket)

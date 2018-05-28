@@ -35,6 +35,8 @@ namespace OnlineMarket.Web
 
 
             services.AddDbContext<OnlineMarketContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineMarketDatabase")));
+            services.AddSingleton<JwtManualValidator>();
+            services.AddLogging();
             services.AddOptions();
             services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("SendGrid"));
             services.Configure<UserSettingsOptions>(Configuration.GetSection("UserSettings"));
@@ -115,8 +117,7 @@ namespace OnlineMarket.Web
             app.UseWebSockets();
             app.UseAuthentication();
             app.UseStaticFiles();
-            app.MapWebSocketManager("/ws/rates", serviceProvider.GetService<RatesWebSocketHandler>());
-            app.MapWebSocketManager("/ws/recentActivities", serviceProvider.GetService<RecentActivitiesWebSocketHandler>());
+            app.MapWebSocketManager("/ws/rates", serviceProvider.GetService<OnlineMarketWebSocketHandler>());
 
             app.UseMvc(routes =>
             {

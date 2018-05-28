@@ -78,7 +78,7 @@ namespace OnlineMarket.Web.Controllers
 
             if (!result.Succeeded) return ErrorHelper.Error("Error login user.");
 
-            return new JsonResult(new { accessToken = new JwtTokenBuilder(_settings).Build(credentials.Email, _defaultRole.Role), userName = credentials.Email });
+            return new JsonResult(new { accessToken = new JwtTokenBuilder(_settings).Build(user.Email, _defaultRole.Role, user.Id), userName = credentials.Email });
         }
 
         [HttpGet]
