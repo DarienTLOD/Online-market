@@ -33,7 +33,7 @@ namespace OnlineMarket.Web
         {
             var settings = new JwtSettings();
 
-            services.AddMvc();
+
             services.AddDbContext<OnlineMarketContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineMarketDatabase")));
             services.AddOptions();
             services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("SendGrid"));
@@ -42,8 +42,6 @@ namespace OnlineMarket.Web
             services.Configure<DefaultNewUserRoleOptions>(Configuration.GetSection("DefaultNewUserRole"));
             services.Configure<EmailCredentials>(Configuration.GetSection("GmailAccount"));
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
-            services.AddWebSocketManager();
-
             Configuration.GetSection("JwtSettings").Bind(settings);
             services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
             services.AddIdentity<UserContractModel, IdentityRole>(options =>
@@ -91,6 +89,8 @@ namespace OnlineMarket.Web
                 });
 
             services.AddAutoMapper();
+            services.AddMvc();
+            services.AddWebSocketManager();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider)
@@ -112,13 +112,15 @@ namespace OnlineMarket.Web
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseWebSockets(new WebSocketOptions());
-            app.MapWebSocketManager("/rates", serviceProvider.GetService<RatesWebSocketHandler>());
+            app.UseWebSockets();
             app.UseAuthentication();
             app.UseStaticFiles();
+            app.MapWebSocketManager("/ws/rates", serviceProvider.GetService<RatesWebSocketHandler>());
+            app.MapWebSocketManager("/ws/recentActivities", serviceProvider.GetService<RecentActivitiesWebSocketHandler>());
 
             app.UseMvc(routes =>
             {
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");

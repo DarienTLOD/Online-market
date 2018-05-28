@@ -1,4 +1,8 @@
-﻿namespace OnlineMarket.Web.WebSocket
+﻿using System.Net.WebSockets;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OnlineMarket.Web.WebSocket
 {
     public class RatesWebSocketHandler : WebSocketHandler
     {
