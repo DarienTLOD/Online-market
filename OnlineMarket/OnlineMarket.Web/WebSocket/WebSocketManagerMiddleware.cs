@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using OnlineMarket.Contract.ContractModels;
 using OnlineMarket.Web.Infrastructure;
 
@@ -15,13 +16,19 @@ namespace OnlineMarket.Web.WebSocket
         private readonly WebSocketHandler _webSocketHandler;
         private readonly UserManager<UserContractModel> _userManager;
         private readonly JwtManualValidator _validator;
+        private readonly ILogger<WebSocketManagerMiddleware> _logger;
 
-        public WebSocketManagerMiddleware(RequestDelegate next, WebSocketHandler webSocketHandler, UserManager<UserContractModel> userManager, JwtManualValidator validator)
+        public WebSocketManagerMiddleware(RequestDelegate next,
+            WebSocketHandler webSocketHandler,
+            UserManager<UserContractModel> userManager,
+            JwtManualValidator validator,
+            ILogger<WebSocketManagerMiddleware> logger)
         {
             _next = next;
             _webSocketHandler = webSocketHandler;
             _userManager = userManager;
             _validator = validator;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -83,7 +90,7 @@ namespace OnlineMarket.Web.WebSocket
             }
             catch (Exception ex)
             {
-
+                _logger.LogError(null, ex);
             }
 
         }

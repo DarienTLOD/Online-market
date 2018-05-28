@@ -3,16 +3,19 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace OnlineMarket.Web.WebSocket
 {
     public abstract class WebSocketHandler
     {
         public WebSocketConnectionManager WebSocketConnectionManager { get; set; }
+        private readonly ILogger<WebSocketHandler> _logger;
 
-        protected WebSocketHandler(WebSocketConnectionManager webSocketConnectionManager)
+        protected WebSocketHandler(WebSocketConnectionManager webSocketConnectionManager, ILogger<WebSocketHandler> logger)
         {
             WebSocketConnectionManager = webSocketConnectionManager;
+            _logger = logger;
         }
 
         public virtual void OnConnected(System.Net.WebSockets.WebSocket socket, string userId)
@@ -40,9 +43,9 @@ namespace OnlineMarket.Web.WebSocket
             {
                 await SendMessageAsync(WebSocketConnectionManager.GetSocketById(socketId), message);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-
+                _logger.LogError(null, exception);
             }
         }
 
