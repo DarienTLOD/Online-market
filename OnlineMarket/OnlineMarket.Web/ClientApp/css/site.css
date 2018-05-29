@@ -19,6 +19,47 @@
     z-index: 1;
 }
 
+.portfolio__item {
+    padding: 20px;
+    margin: 20px 0;
+    border: 0 solid #eee;
+    border-left-width: 5px;
+}
+
+.portfolio__chart_size_s {
+    height: 10em;
+}
+
+.portfolio__item_height_default {
+    height: 12.5em;
+}
+
+.portfolio__item_color_default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.recent-activities-block_margin-top_default {
+    /*for elements that must be located on the same line as bootstrap nav content*/
+    margin-top: 5.8em;
+}
+
+.recent-activities-block__item_padding-left_default {
+    padding-left: 2em;
+}
+
+.login-form_content_vertical-centered {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.login-form__test-page-link_margin-top {
+    margin-top: 1em;
+}
+
 @media (max-width: 767px) {
     /* On small screens, the nav menu spans the full width of the screen. Leave a space for it. */
     body {

@@ -26,6 +26,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\js\site.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ClientApp\js\site.js">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\OnlineMarket.Contract\OnlineMarket.Contract.csproj" />
     <ProjectReference Include="..\OnlineMarket.DataAccess\OnlineMarket.DataAccess.csproj" />
     <ProjectReference Include="..\OnlineMarket.DependencyResolver\OnlineMarket.DependencyResolver.csproj" />
