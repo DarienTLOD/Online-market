@@ -27,9 +27,11 @@ module.exports = (env) => {
                 'react-router-dom',
                 'react-redux',
                 'redux',
+                'redux-form',
                 'redux-thunk',
                 'react-router-redux',
-                'jquery'
+                'jquery',
+                'chart.js'
             ],
         },
         output: {

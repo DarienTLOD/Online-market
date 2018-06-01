@@ -71,12 +71,12 @@ namespace OnlineMarket.Web.Controllers
 
             var user = await _userManager.FindByEmailAsync(credentials.Email);
 
-            if (user == null) return ErrorHelper.Error("The user with email doesn't exist.");
-            if (!await _userManager.IsEmailConfirmedAsync(user)) return ErrorHelper.Error("Account confirmation is required.");
+            if (user == null) return ErrorHelper.Error(new[] { "The user with email doesn't exist."});
+            if (!await _userManager.IsEmailConfirmedAsync(user)) return ErrorHelper.Error(new[] { "Account confirmation is required."});
 
             var result = await _signInManager.PasswordSignInAsync(user, credentials.Password, credentials.IsPersistent, false);
 
-            if (!result.Succeeded) return ErrorHelper.Error("Error login user.");
+            if (!result.Succeeded) return ErrorHelper.Error(new []{"Error login user."});
 
             return new JsonResult(new { accessToken = new JwtTokenBuilder(_settings).Build(user.Email, _defaultRole.Role, user.Id), userName = credentials.Email });
         }
@@ -86,19 +86,19 @@ namespace OnlineMarket.Web.Controllers
         {
             if (userId == null || code == null)
             {
-                return ErrorHelper.Error("Error confirming email.");
+                return ErrorHelper.Error(new[] { "Error confirming email."});
             }
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return ErrorHelper.Error($"Unable to load user with ID '{userId}'.");
+                return ErrorHelper.Error(new[] { $"Unable to load user with ID '{userId}'."});
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, code);
             if (!result.Succeeded)
             {
-                return ErrorHelper.Error($"Error confirming email for user with ID '{userId}':");
+                return ErrorHelper.Error(new[] { $"Error confirming email for user with ID '{userId}':"});
             }
 
             return Ok();

@@ -39,7 +39,7 @@ namespace OnlineMarket.Web.Controllers
             var user = await _userManager.FindByIdAsync(lockoutModel.UserId);
             if (user == null)
             {
-                return ErrorHelper.Error($"Unable to load user with ID '{lockoutModel.UserId}'.");
+                return ErrorHelper.Error(new[] { $"Unable to load user with ID '{lockoutModel.UserId}'."});
             }
 
             var result = await _userManager.SetLockoutEnabledAsync(user, lockoutModel.IsLockout);

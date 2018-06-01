@@ -1,7 +1,10 @@
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
+using NJsonSchema;
+using NSwag.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,7 +35,6 @@ namespace OnlineMarket.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var settings = new JwtSettings();
-
 
             services.AddDbContext<OnlineMarketContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OnlineMarketDatabase")));
             services.AddSingleton<JwtManualValidator>();
@@ -90,6 +92,7 @@ namespace OnlineMarket.Web
                     };
                 });
 
+            services.AddSwagger();
             services.AddAutoMapper();
             services.AddMvc();
             services.AddWebSocketManager();
@@ -108,6 +111,14 @@ namespace OnlineMarket.Web
                     HotModuleReplacement = true,
                     ReactHotModuleReplacement = true
                 });
+#pragma warning disable 618
+                app.UseSwaggerUiWithApiExplorer(settings =>
+#pragma warning restore 618
+                {
+                    settings.ShowRequestHeaders = true;
+                    settings.ValidateSpecification = true;
+                });
+
             }
             else
             {
@@ -117,7 +128,8 @@ namespace OnlineMarket.Web
             app.UseWebSockets();
             app.UseAuthentication();
             app.UseStaticFiles();
-            app.MapWebSocketManager("/ws/rates", serviceProvider.GetService<OnlineMarketWebSocketHandler>());
+
+                app.MapWebSocketManager("/ws/rates", serviceProvider.GetService<OnlineMarketWebSocketHandler>());
 
             app.UseMvc(routes =>
             {

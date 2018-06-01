@@ -24,6 +24,7 @@ namespace OnlineMarket.Web.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
             return new JsonResult(await _ratesService.GetCurrentRatesAsync());
@@ -37,13 +38,13 @@ namespace OnlineMarket.Web.Controllers
             {
                 var result = await _ratesService.ChangeRatesAsync(rates);
                 await _handler.SendMessageToAllAsync(JsonConvert.SerializeObject(new {type = "rates", rates}));
-                if (result == 0) return ErrorHelper.Error("Nothing changed");
+                if (result == 0) return ErrorHelper.Error(new[] { "Nothing changed"});
 
                 return Ok();
             }
             catch (Exception exception)
             {
-                return ErrorHelper.Error(exception.Message);
+                return ErrorHelper.Error(new[] { exception.Message});
             }
         }
     }

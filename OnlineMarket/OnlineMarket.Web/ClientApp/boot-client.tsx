@@ -1,4 +1,5 @@
 import './css/site.css';
+import './js/site.js';
 import 'bootstrap';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -9,7 +10,7 @@ import { createBrowserHistory } from 'history';
 import configureStore from './configureStore';
 import { ApplicationState }  from './store';
 import * as RoutesModule from './routes';
-let routes = RoutesModule.routes;
+let login = RoutesModule.login;
 
 // Create browser history to use in the Redux store
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href')!;
@@ -25,7 +26,7 @@ function renderApp() {
     ReactDOM.render(
         <AppContainer>
             <Provider store={ store }>
-                <ConnectedRouter history={ history } children={ routes } />
+                <ConnectedRouter history={ history } children={ login } />
             </Provider>
         </AppContainer>,
         document.getElementById('react-app')
@@ -37,7 +38,7 @@ renderApp();
 // Allow Hot Module Replacement
 if (module.hot) {
     module.hot.accept('./routes', () => {
-        routes = require<typeof RoutesModule>('./routes').routes;
+        //appRoutes = require<typeof RoutesModule>('./routes').login;
         renderApp();
     });
 }
